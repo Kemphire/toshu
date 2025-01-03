@@ -1,0 +1,4 @@
+- [X] Make task creation interactive
+- [ ] keep record of recent changes in the entry
+- [X] implement adding category
+- [ ] implement a more robuts delete function for categories with user choice wheater to delete orphan or to keep them
