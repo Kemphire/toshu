@@ -70,8 +70,8 @@ def list_category_int(to_highlight: str, console: Console):
         console.print(table)
 
 
-@app.command()
-def list_tasks(short_help="Display list of task, with related data"):
+@app.command(short_help="Display list of task, with related data")
+def list_tasks():
     spinner = Spinner("bouncingBall", text="Fetching tasks...")
     with Live(spinner, refresh_per_second=10, console=console) as live:
         for _ in range(5):
@@ -103,22 +103,25 @@ def list_tasks(short_help="Display list of task, with related data"):
             table.add_column("Priority")
             table.add_column("Completed")
             for task in tasks:
-                if bool(task.completed):
-                    table.add_row(
-                        str(task.id),
-                        f"[green]{task.title}[/green]",
-                        f"[blue]{task.description}[/blue]",
-                        f"[yello]{task.category.name}[/]",
-                        f"[cyan]{task.priority}[/]",
-                        ":white_check_mark:",
+                row_content = [
+                    str(task.id),
+                    f"[green]{task.title}[/]",
+                    f"[blue]{task.description}[/]",
+                ]
+                if task.category:
+                    row_content.extend(
+                        [
+                            f"[yellow]{task.category.name}[/]",
+                            f"[cyan]{task.priority}[/]",
+                        ]
                     )
                 else:
-                    table.add_row(
-                        str(task.id),
-                        f"[green]{task.title}[/green]",
-                        f"[blue]{task.description}[/blue]",
-                        f"[yello]{task.category.name}[/]",
-                        f"[cyan]{task.priority}[/]",
-                        ":x:",
+                    row_content.extend(
+                        [f"[yellow]{None}[/]", f"[cyan]{task.priority}[/]"]
                     )
+                if bool(task.completed):
+                    row_content.append(":white_check_mark:")
+                else:
+                    row_content.append(":x:")
+                table.add_row(*row_content)
             console.print(table)

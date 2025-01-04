@@ -36,6 +36,9 @@ class Category(Base):
         back_populates="category",
     )
 
+    def __repr__(self):
+        return self.name
+
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -50,7 +53,7 @@ class Task(Base):
         ForeignKey(
             "category.id",
         ),
-        nullable=False,
+        nullable=True,
     )
     priority = Column(SEnum(Priority), default=Priority.L, nullable=False)
 
@@ -87,7 +90,10 @@ def handle_no_of_task_after_update(mapper, connection, target: Task):
                 target.category_id,
             )
 
-            old_category = session.get(Category, old_category_id)
+            if old_category_id:
+                old_category = session.get(Category, old_category_id)
+            else:
+                old_category = None
             if old_category and old_category.no_of_tasks >= 1:
                 old_category.no_of_tasks -= 1
 

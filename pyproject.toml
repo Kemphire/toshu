@@ -4,4 +4,9 @@ version = "0.01"
 description = "A python command line todo application"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["alembic>=1.14.0", "sqlalchemy>=2.0.36", "typer>=0.15.1"]
+dependencies = [
+    "alembic>=1.14.0",
+    "pyyaml>=6.0.2",
+    "sqlalchemy>=2.0.36",
+    "typer>=0.15.1",
+]

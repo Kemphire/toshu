@@ -1,15 +1,18 @@
+from typing import Annotated, Tuple
 from rich.prompt import Prompt
+from sqlalchemy.orm import Session
 import typer
 from database.db import SessionLocal
 from database.models import Category, Task
 from todo.user_commands.helpers import panic
+from .helpers import *
 
 
 app = typer.Typer()
 
 
 @app.command(short_help="Delete category", name="del_cat")
-def delete_category(title_or_id: str):
+def delete_category(name_or_id: str):
     """
     Delete category and treat the orphan tasks according to the user choices.
     1. wheahter to delete all related tasks
@@ -17,101 +20,11 @@ def delete_category(title_or_id: str):
     1. wheahter to change their category
     """
     with SessionLocal() as session:
-        if title_or_id.isdigit():
-            category_obj = session.get(Category, title_or_id)
-            if category_obj:
-                preference = ask_for_deletion_preference()
-                match preference:
-                    case 1:
-                        rows_deleted_of_task = (
-                            session.query(Task)
-                            .filter(Task.category_id == title_or_id)
-                            .delete()
-                        )
-                        print(f"Total {rows_deleted_of_task} rows got deleted")
-                    case 2:
-                        rows_affected = (
-                            session.query(Task)
-                            .filter(Task.category_id == title_or_id)
-                            .update({"category_id": None})
-                        )
-                        print(
-                            f"Total {rows_affected} got their category changed to None"
-                        )
-                    case 3:
-                        available_cats = (
-                            session.query(Category)
-                            .filter(Category.id != title_or_id)
-                            .all()
-                        )
-                        choices = [cat.name for cat in available_cats]
-                        new_category = Prompt.ask(
-                            f"Choose your new category for the the task with category id as {title_or_id}",
-                            choices=choices,
-                        )
-                        new_category = available_cats[choices.index(new_category)]
-                        rows_affected = (
-                            session.query(Task)
-                            .filter(Task.category_id == title_or_id)
-                            .update(
-                                {
-                                    "category": new_category,
-                                    "category_id": new_category.id,
-                                },
-                                synchronize_session=False,
-                            )
-                        )
-                        print(f"Total {rows_affected} got their category changed")
-                    case _:
-                        panic("Not expected")
+        if name_or_id.isdigit():
+            _delete_when_digit(session, int(name_or_id))
         else:
-            category_obj = session.get(Category, {"name": title_or_id})
-            if category_obj:
-                preference = ask_for_deletion_preference()
-                match preference:
-                    case 1:
-                        rows_deleted_of_task = (
-                            session.query(Task)
-                            .filter(Task.category_id == category_obj.id)
-                            .delete()
-                        )
-                        print(f"Total {rows_deleted_of_task} rows got deleted")
-                    case 2:
-                        rows_affected = (
-                            session.query(Task)
-                            .filter(Task.category_id == category_obj.id)
-                            .update({"category_id": None})
-                        )
-                        print(
-                            f"Total {rows_affected} got their category changed to None"
-                        )
-                    case 3:
-                        available_cats = (
-                            session.query(Category)
-                            .filter(Category.id != category_obj.id)
-                            .all()
-                        )
-                        choices = [cat.name for cat in available_cats]
-                        new_category = Prompt.ask(
-                            f"Choose your new category for the the task with category id as {title_or_id}",
-                            choices=choices,
-                        )
-                        new_category = available_cats[choices.index(new_category)]
-                        rows_affected = (
-                            session.query(Task)
-                            .filter(Task.category_id == title_or_id)
-                            .update(
-                                {
-                                    "category": new_category,
-                                    "category_id": new_category.id,
-                                },
-                                synchronize_session=False,
-                            )
-                        )
-                        print(f"Total {rows_affected} got their category changed")
-                    case _:
-                        panic("Not expected")
-            session.commit()
+            _delete_when_name_of_cat(session, name_or_id)
+        session.commit()
 
 
 def ask_for_deletion_preference() -> int:
@@ -125,3 +38,109 @@ def ask_for_deletion_preference() -> int:
         choices=list("123"),
     )
     return int(prefer)
+
+
+def _delete_when_digit(session: Session, id: int):
+    try:
+        category_obj = session.query(Category).filter(Category.id == id)[0]
+    except IndexError:
+        category_obj = None
+    if category_obj:
+        preference = ask_for_deletion_preference()
+        match preference:
+            case 1:
+                rows_deleted_of_task = _handle_case_1(session, category_obj)
+                print(f"Total {rows_deleted_of_task} rows got deleted")
+            case 2:
+                rows_affected = _handle_case_2(session, category_obj)
+                print(f"Total {rows_affected} got their category changed to None")
+            case 3:
+                rows_affected, new_category = _handle_case_3(
+                    session, category_obj, category_obj.name
+                )
+                setattr(
+                    new_category,
+                    "no_of_tasks",
+                    new_category.no_of_tasks + rows_affected,
+                )
+                print(f"Total {rows_affected} task got their category changed")
+            case _:
+                panic("Not expected")
+    else:
+        panic(f"[red]{id}[/] is not a valid ID of category")
+    session.delete(category_obj)
+
+
+def _delete_when_name_of_cat(session: Session, name: str) -> None:
+    try:
+        category_obj = session.query(Category).filter(Category.name == name)[0]
+    except IndexError:
+        category_obj = None
+    if category_obj:
+        preference = ask_for_deletion_preference()
+        match preference:
+            case 1:
+                rows_deleted_of_task = _handle_case_1(session, category_obj)
+                print(f"Total {rows_deleted_of_task} rows got deleted")
+            case 2:
+                rows_affected = _handle_case_2(session, category_obj)
+                print(f"Total {rows_affected} got their category changed to None")
+            case 3:
+                rows_affected, new_category = _handle_case_3(
+                    session, category_obj, name
+                )
+                setattr(
+                    new_category,
+                    "no_of_tasks",
+                    new_category.no_of_tasks + rows_affected,
+                )
+                print(f"Total {rows_affected} got their category changed")
+            case _:
+                panic("Not expected")
+    else:
+        panic(f"[red]{name}[/] is not a valid category")
+    session.delete(category_obj)
+
+
+def _handle_case_1(
+    session: Session, category_obj: Category
+) -> Annotated[int, "Number of tasks got deleted"]:
+    return session.query(Task).filter(Task.category_id == category_obj.id).delete()
+
+
+def _handle_case_2(
+    session: Session, category_obj: Category
+) -> Annotated[int, "Number of tasks got orphan"]:
+    return (
+        session.query(Task)
+        .filter(Task.category_id == category_obj.id)
+        .update({"category_id": None})
+    )
+
+
+def _handle_case_3(
+    session: Session, category_obj: Category, old_name: str
+) -> Annotated[
+    Tuple[int, Category],
+    "Number of tasks got their category changed, and updated category of tasks",
+]:
+    available_cats = (
+        session.query(Category).filter(Category.id != category_obj.id).all()
+    )
+    choices = [cat.name for cat in available_cats]
+    new_category = Prompt.ask(
+        f"Choose your new category for the the tasks with category name {old_name}",
+        choices=choices,
+    )
+    new_category = available_cats[choices.index(new_category)]
+    rows_affected = (
+        session.query(Task)
+        .filter(Task.category_id == category_obj.id)
+        .update(
+            {
+                "category_id": new_category.id,
+            },
+        )
+    )
+
+    return rows_affected, new_category
