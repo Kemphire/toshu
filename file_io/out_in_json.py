@@ -1,8 +1,15 @@
-from database.models import Category, Task
 from pathlib import Path
 import json
 import os
 from typing import List, Union
+
+from database.db import SessionLocal
+from database.models import Category, Task
+
+from todo.user_commands.helpers import fake_progress_bar
+from time import sleep
+
+from rich import print
 
 
 def serve_json_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]):
@@ -14,7 +21,7 @@ def serve_json_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]
                         "id": task.id,
                         "title": task.title,
                         "description": task.description,
-                        "category": task.category.name,
+                        "category": task.category,
                         "completion status": task.completed,
                     }
                     for task in tasks_or_cats
@@ -34,3 +41,44 @@ def serve_json_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]
 
     file_size = os.stat(file).st_size
     print(f"{file_size} bytes written to file {file.name}")
+
+
+def create_task_using_json(file: Path):
+    with file.open(encoding="utf-8") as file_cont:
+        rows = json.load(file_cont)
+        total_rows = len(rows)
+
+        if total_rows == 0:
+            print("[red]No rows in the CSV file.[/red]")
+            return
+
+        with SessionLocal() as session:
+            tasks = []
+            for i, row in enumerate(rows):
+                task_content = {}
+                title = row.get("Title")
+                if not title:
+                    print(f"[yellow]Skipping row {i + 1}: Title is missing.[/yellow]")
+                    continue
+
+                task_content["title"] = title
+
+                if category_id := row.get("Category ID"):
+                    task_content["category_id"] = category_id
+                if priority := row.get("Priority"):
+                    if priority in ["L", "M", "T"]:
+                        task_content["priority"] = priority
+                if completed := row.get("Completion Status"):
+                    task_content["completed"] = completed.lower() in ["true", "1"]
+
+                try:
+                    task = Task(**task_content)
+                except Exception as e:
+                    print(e)
+                else:
+                    tasks.append(task)
+            fake_progress_bar(100, 0.01)
+            session.add_all(tasks)
+            session.commit()
+        sleep(0.01)
+        print(f"\n[green]Added [red]{len(tasks)}[/] tasks to the database.[/]")

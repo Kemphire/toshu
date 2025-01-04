@@ -3,8 +3,9 @@
 - [X] implement adding category
 - [X] implement a more robuts delete function for categories with user choice wheater to delete orphan or to keep them
 - [X] biffuracte the delete category function into pieces
-- [ ] implement a feature so that user is able to add new task using, a json/yaml file
-    - [ ] make a module containing function agnostic of typer
-    - [ ] write files for  typer commands
+- [X] implement a feature so that user is able to add new task using, a json/yaml file
+    - [X] make a module containing function agnostic of typer
+    - [X] write files for  typer commands
 - [X] implement exporting list of task and category in various file format
 - [ ] give various statistical visualization of the task, like a scatter plot for completed vs not completed task in every category, and more
+- [ ] write unit tests

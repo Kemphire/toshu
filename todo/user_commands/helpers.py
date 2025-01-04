@@ -10,6 +10,7 @@ from rich.spinner import Spinner
 from typing import List
 from sqlalchemy import func
 from rich.prompt import Prompt
+from rich.progress import track
 
 
 def find_category(session: Session, categ: str) -> Category:
@@ -69,3 +70,10 @@ def panic(message: str):
 
 def count_not_completed(query: List[Task]) -> int:
     return sum(1 for task in query if not task.completed)
+
+
+def fake_progress_bar(range_progress: int, interval: float):
+    for _ in track(range(range_progress), description="Reading from file..."):
+        sleep(interval)
+    for _ in track(range(range_progress), description="Adding task..."):
+        sleep(interval)

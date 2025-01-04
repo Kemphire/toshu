@@ -1,3 +1,4 @@
+from typing import Union
 from sqlalchemy import (
     Column,
     Integer,
@@ -71,7 +72,12 @@ def increment_task_count(mapper, connection, target: Task):
     Increase the number_of_task column in Category table, when a new task is inserted in Task table
     """
     session = Session(bind=connection)
-    category: Category = session.query(Category).get(target.category_id)
+    if target.category_id is not None:
+        category: Union[Category, None] = session.query(Category).get(
+            target.category_id
+        )
+    else:
+        category = None
     if category:
         category.no_of_tasks += 1
         session.commit()
