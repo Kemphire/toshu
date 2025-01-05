@@ -8,7 +8,7 @@ from sqlalchemy import (
     Enum as SEnum,
     event,
 )
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship, Session, attributes
 from enum import Enum
 
@@ -73,9 +73,7 @@ def increment_task_count(mapper, connection, target: Task):
     """
     session = Session(bind=connection)
     if target.category_id is not None:
-        category: Union[Category, None] = session.query(Category).get(
-            target.category_id
-        )
+        category: Union[Category, None] = session.get(Category, target.category_id)
     else:
         category = None
     if category:

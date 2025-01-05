@@ -64,8 +64,9 @@ def interactive_add_task_int(categ: str, console: Console):
 
 
 def panic(message: str):
-    print(message)
-    raise typer.Exit
+    console = Console(stderr=True)
+    console.print(message)
+    raise typer.Exit(1)
 
 
 def count_not_completed(query: List[Task]) -> int:
