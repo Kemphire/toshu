@@ -2,14 +2,14 @@ from pathlib import Path
 from database.models import Category, Task
 import yaml
 import os
-from typing import List, Union
+from typing import List, Union, Annotated
 from time import sleep
 
 from database.db import SessionLocal
 
 from rich import print
 
-from todo.user_commands.helpers import fake_progress_bar
+from todo.user_commands.helpers import fake_progress_bar, panic, wheahter_a_list_of_dict
 
 
 def serve_yaml_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]):
@@ -43,15 +43,22 @@ def serve_yaml_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]
     print(f"{file_size} bytes written to {file.name}")
 
 
-def create_task_using_yaml(file: Path):
+def create_task_using_yaml(
+    file: Path,
+) -> Annotated[int, "total number of tasks sucessfully imported"]:
     with file.open(encoding="utf-8") as file_cont:
         rows = yaml.safe_load(file_cont)
         total_rows = len(rows)
 
         if total_rows == 0:
             print("[red]No rows in the CSV file.[/red]")
-            return
+            return 0
 
+        correct_format = wheahter_a_list_of_dict(rows)
+        if not correct_format:
+            panic(f"{file.name} is not of correct format")
+
+        successfully_imported = 0
         with SessionLocal() as session:
             tasks = []
             for i, row in enumerate(rows):
@@ -62,6 +69,7 @@ def create_task_using_yaml(file: Path):
                     continue
 
                 task_content["title"] = title
+                successfully_imported += 1
 
                 if category_id := row.get("Category ID"):
                     task_content["category_id"] = category_id
@@ -81,4 +89,49 @@ def create_task_using_yaml(file: Path):
             session.add_all(tasks)
             session.commit()
         sleep(0.01)
-        print(f"\n[green]Added [red]{len(tasks)}[/] tasks to the database.[/]")
+        print(
+            f"\n[green]Added [red]{successfully_imported}[/] tasks to the database.[/]"
+        )
+        return successfully_imported
+
+
+def create_category_using_yaml(
+    file: Path,
+) -> Annotated[int, "Total number of categories sucessfully imported"]:
+    with file.open("r", encoding="utf-8") as file_cont:
+        rows = yaml.safe_load(file_cont)
+
+        if len(rows) == 0:
+            panic("There are 0 categories to add, exiting...")
+            return 0
+
+        correct_format = wheahter_a_list_of_dict(rows)
+        if not correct_format:
+            panic(f"{file.name} is not of correct format")
+
+        successfully_imported = 0
+        with SessionLocal() as session:
+            categories = []
+            for i, cat in enumerate(rows):
+                category_content = {}
+                title = cat.get("Title")
+                if not title:
+                    print(f"[yellow]Skippig row [red]{i + 1}[/]: Title is missing.[/]")
+                    continue
+                category_content["title"] = title
+                successfully_imported += 1
+
+                try:
+                    categ = Category(**category_content)
+                except Exception as e:
+                    print(e)
+                else:
+                    categories.append(categ)
+            fake_progress_bar(50, 0.001)
+            session.add_all(categories)
+            session.commit()
+        sleep(0.01)
+        print(
+            f"\n[green]Added [red]{successfully_imported}[/] tasks to the database.[/]"
+        )
+        return successfully_imported

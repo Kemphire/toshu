@@ -7,7 +7,7 @@ from rich import print
 from rich.console import Console
 from rich.live import Live
 from rich.spinner import Spinner
-from typing import List
+from typing import Any, List
 from sqlalchemy import func
 from rich.prompt import Prompt
 from rich.progress import track
@@ -77,3 +77,16 @@ def fake_progress_bar(range_progress: int, interval: float):
         sleep(interval)
     for _ in track(range(range_progress), description="Adding task..."):
         sleep(interval)
+
+
+def wheahter_a_list_of_dict(object: Any) -> bool:
+    if isinstance(object, list):
+        return all(wheahter_a_dict(obj) for obj in object)
+    else:
+        return False
+
+
+def wheahter_a_dict(object: Any) -> bool:
+    if isinstance(object, dict):
+        return True
+    return False

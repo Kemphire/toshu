@@ -7,5 +7,6 @@
     - [X] make a module containing function agnostic of typer
     - [X] write files for  typer commands
 - [X] implement exporting list of task and category in various file format
+- [X] import categories from file format
 - [ ] give various statistical visualization of the task, like a scatter plot for completed vs not completed task in every category, and more
 - [ ] write unit tests
