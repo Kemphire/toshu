@@ -1,16 +1,18 @@
-import typer
 from time import sleep
-from sqlalchemy.orm import Session
-from database.db import SessionLocal
-from database.models import Task, Category
+from typing import Any, List
+
+import typer
 from rich import print
 from rich.console import Console
 from rich.live import Live
-from rich.spinner import Spinner
-from typing import Any, List
-from sqlalchemy import func
-from rich.prompt import Prompt
 from rich.progress import track
+from rich.prompt import Prompt
+from rich.spinner import Spinner
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+
+from database.db import SessionLocal
+from database.models import Category, Task
 
 
 def find_category(session: Session, categ: str) -> Category:
@@ -63,10 +65,13 @@ def interactive_add_task_int(categ: str, console: Console):
             live.refresh()
 
 
-def panic(message: str):
+def panic(message: str, severe: int = 3):
     console = Console(stderr=True)
     console.print(message)
-    raise typer.Exit(1)
+    if severe == 3:
+        raise typer.Exit(1)
+    else:
+        raise typer.Exit
 
 
 def count_not_completed(query: List[Task]) -> int:

@@ -66,7 +66,7 @@ def serve_json_file(file: Path, tasks_or_cats: Union[List[Task], List[Category]]
                         "id": task.id,
                         "title": task.title,
                         "description": task.description,
-                        "category": task.category,
+                        "category": task.category.__repr__(),
                         "completion status": task.completed,
                     }
                     for task in tasks_or_cats

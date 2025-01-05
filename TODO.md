@@ -8,5 +8,8 @@
     - [X] write files for  typer commands
 - [X] implement exporting list of task and category in various file format
 - [X] import categories from file format
-- [ ] give various statistical visualization of the task, like a scatter plot for completed vs not completed task in every category, and more
-- [ ] write unit tests
+- [X] give various statistical visualization of the task, like a scatter plot for completed vs not completed task in every category, and more
+    - **only added support for pie and bar chart**
+- [X] write unit tests
+- [ ] write more unit tests
+- [ ] add support for timestamps, and other related features

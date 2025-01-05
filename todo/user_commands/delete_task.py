@@ -1,7 +1,10 @@
 import typer
+from rich import print
+from rich.prompt import Confirm
+
 from database.db import SessionLocal
 from database.models import Task
-from rich import print
+from todo.user_commands.helpers import panic
 
 app = typer.Typer()
 
@@ -65,3 +68,17 @@ def delete(id: int):
         session.close()
 
         print(f"Task with title [bold red]{task.title}[/bold red] got deleted!")
+
+
+@app.command(short_help="delete all the orphan task", name="kill-orphan")
+def delete_orphan():
+    with SessionLocal() as session:
+        orhphan_tasks = session.query(Task).filter(Task.category_id == None)
+        orphan_tasks_count = orhphan_tasks.count()
+        confirmation = Confirm.ask(f"Do you want to delete {orphan_tasks_count} tasks")
+        if confirmation:
+            orhphan_tasks.delete()
+            print(f"Successfully deleted {orphan_tasks_count}")
+        else:
+            panic(f"Aborting delete for {orphan_tasks_count} tasks...", severe=1)
+        session.commit()
