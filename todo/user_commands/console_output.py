@@ -1,13 +1,15 @@
-import typer
 from time import sleep
-from database.db import SessionLocal
-from database.models import Task, Category
+from typing import List
+
+import typer
 from rich import print
 from rich.console import Console
-from rich.table import Table
 from rich.live import Live
 from rich.spinner import Spinner
-from typing import List
+from rich.table import Table
+
+from database.db import SessionLocal
+from database.models import Category, Task
 
 from .helpers import *
 
@@ -71,6 +73,7 @@ def list_category_int(to_highlight: str, console: Console):
 
 
 @app.command(short_help="Display list of task, with related data")
+@handle_pipes
 def list_tasks():
     spinner = Spinner("bouncingBall", text="Fetching tasks...")
     with Live(spinner, refresh_per_second=10, console=console) as live:
@@ -81,7 +84,7 @@ def list_tasks():
         tasks = session.query(Task).all()
         session.commit()
         if not tasks:
-            console.print("[red]No tasks[/red]")
+            print("[red]No task[/]")
         else:
             not_completed = count_not_completed(tasks)
             if not_completed > 0:
@@ -96,11 +99,20 @@ def list_tasks():
                     header_style="bold magenta",
                     caption="You have completed all your task",
                 )
-            table.add_column("ID", style="dim", width=2)
-            table.add_column("Title", justify="center")
+
+            table.add_column(
+                "ID",
+                style="dim",
+            )
+            table.add_column(
+                "Title",
+                justify="center",
+            )
             table.add_column("Description", justify="right")
             table.add_column("Category")
             table.add_column("Priority")
+            table.add_column("Created At (date)", justify="center")
+            table.add_column("Created At (time)", justify="center")
             table.add_column("Completed")
             for task in tasks:
                 row_content = [
@@ -112,16 +124,36 @@ def list_tasks():
                     row_content.extend(
                         [
                             f"[yellow]{task.category.name}[/]",
-                            f"[cyan]{task.priority}[/]",
                         ]
                     )
                 else:
-                    row_content.extend(
-                        [f"[yellow]{None}[/]", f"[cyan]{task.priority}[/]"]
-                    )
+                    row_content.extend([f"[yellow]{None}[/]"])
+                row_content.extend(
+                    [
+                        f"[cyan]{task.priority}[/]",
+                        f"{str(task.created_at.date())}",
+                        f"{str(task.created_at.time()).split(".")[0]}",
+                    ]
+                )
                 if bool(task.completed):
                     row_content.append(":white_check_mark:")
+                    table.add_row(*row_content, style="green")
                 else:
                     row_content.append(":x:")
-                table.add_row(*row_content)
+                    table.add_row(*row_content, style="red")
             console.print(table)
+
+        #     dict_obj = {
+        #         "ID": [str(task.id) for task in tasks],
+        #         "Title": [task.title for task in tasks],
+        #         "Description": [task.description for task in tasks],
+        #         "Category": [
+        #             task.category.name for task in tasks if task.category is not None
+        #         ],
+        #         "Priority": [task.priority for task in tasks],
+        #         "Completed": [
+        #             ":white_check_mark:" if bool(task.completed) else ":x:"
+        #             for task in tasks
+        #         ],
+        #     }
+        # return dict_obj

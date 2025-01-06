@@ -1,5 +1,7 @@
+import sys
+from functools import wraps
 from time import sleep
-from typing import Any, List
+from typing import Any, Dict, List
 
 import typer
 from rich import print
@@ -8,11 +10,14 @@ from rich.live import Live
 from rich.progress import track
 from rich.prompt import Prompt
 from rich.spinner import Spinner
+from rich.table import Table
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from database.db import SessionLocal
 from database.models import Category, Task
+
+console = Console()
 
 
 def find_category(session: Session, categ: str) -> Category:
@@ -69,7 +74,7 @@ def panic(message: str, severe: int = 3):
     console = Console(stderr=True)
     console.print(message)
     if severe == 3:
-        raise typer.Exit(1)
+        sys.exit(1)
     else:
         raise typer.Exit
 
@@ -96,3 +101,36 @@ def wheahter_a_dict(object: Any) -> bool:
     if isinstance(object, dict):
         return True
     return False
+
+
+def print_colorful_table(object: Dict[str, List[Any]]):
+    if not isinstance(object, dict):
+        panic(f"{object} is not a dict, aborting table formation")
+    table = Table(header_style="bold cyan")
+    for cols in object.keys():
+        table.add_column(cols, style="dim", width=2)
+
+    max_list_len = max(len(val) for val in object.values())
+    for i in range(max_list_len):
+        row_content = []
+        for _, values in object.items():
+            if isinstance(values, list):
+                row_content.append(values[i] if i < len(values) else "")
+            else:
+                row_content.append(str(values))
+        table.add_row(*row_content)
+
+
+def handle_pipes(func):
+    """
+    checks wheather the stdout is a tty, or piped to other program like **awk**
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if sys.stdout.isatty():
+            func(*args, **kwargs)
+        else:
+            panic("Pipes [bold red]'|'[/] are not yet supported!")
+
+    return wrapper

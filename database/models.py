@@ -1,17 +1,26 @@
+from datetime import datetime
+from enum import Enum
 from typing import Union
+
 from sqlalchemy import (
+    Boolean,
     Column,
+    ForeignKey,
     Integer,
     String,
-    Boolean,
-    ForeignKey,
-    Enum as SEnum,
     event,
 )
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Session, attributes
-from enum import Enum
-
+from sqlalchemy import (
+    Enum as SEnum,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    Session,
+    attributes,
+    declarative_base,
+    mapped_column,
+    relationship,
+)
 
 Base = declarative_base()
 
@@ -57,6 +66,8 @@ class Task(Base):
         nullable=True,
     )
     priority = Column(SEnum(Priority), default=Priority.L, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now())
 
     category = relationship("Category", back_populates="tasks")
 

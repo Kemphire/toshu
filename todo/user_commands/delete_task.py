@@ -75,6 +75,8 @@ def delete_orphan():
     with SessionLocal() as session:
         orhphan_tasks = session.query(Task).filter(Task.category_id == None)
         orphan_tasks_count = orhphan_tasks.count()
+        if orphan_tasks_count == 0:
+            panic("There are not orphan tasks", severe=1)
         confirmation = Confirm.ask(f"Do you want to delete {orphan_tasks_count} tasks")
         if confirmation:
             orhphan_tasks.delete()

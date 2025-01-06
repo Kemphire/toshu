@@ -1,11 +1,13 @@
+from typing import Optional
+
 import typer
-from database.db import SessionLocal
-from database.models import Priority, Task, Category
 from rich import print
 from rich.console import Console
-from typing import Optional
-from typing_extensions import Annotated
 from rich.prompt import Prompt
+from typing_extensions import Annotated
+
+from database.db import SessionLocal
+from database.models import Category, Priority, Task
 
 from .helpers import *
 

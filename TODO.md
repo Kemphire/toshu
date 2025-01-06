@@ -11,5 +11,10 @@
 - [X] give various statistical visualization of the task, like a scatter plot for completed vs not completed task in every category, and more
     - **only added support for pie and bar chart**
 - [X] write unit tests
+- [ ] add support for piping output to other program
+    - [resource](https://chatgpt.com/c/677b85a9-2b4c-8009-8a04-561839b94311)
+    - [ ] write some decorators for this purpose
+    - [ ] just output in csv format when the stdout is not a tty
 - [ ] write more unit tests
-- [ ] add support for timestamps, and other related features
+- [X] add support for timestamps
+- [ ] add filter task support
