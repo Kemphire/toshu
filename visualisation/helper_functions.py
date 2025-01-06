@@ -1,4 +1,3 @@
-import random
 from functools import wraps
 from typing import List, Tuple
 
@@ -13,17 +12,19 @@ def randomize_the_list(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Tuple[List[str], List[int]]:
-        result = func(*args, **kwargs)
-        names, counts = result
-        random.shuffle(names)
-        random.shuffle(counts)
+        result: List[Tuple[str, int]] = func(*args, **kwargs)
+        names: List[str] = []
+        counts: List[int] = []
+        for i, j in result:
+            names.append(i)
+            counts.append(j)
         return names, counts
 
     return wrapper
 
 
 @randomize_the_list
-def get_category_with_number_of_sizes() -> Tuple[List[str], List[int]]:
+def get_category_with_number_of_sizes() -> List[Tuple[str, int]]:
     """
     Returs a tuple with two elements,
         1. names of categories
@@ -42,4 +43,4 @@ def get_category_with_number_of_sizes() -> Tuple[List[str], List[int]]:
         for i, j in final_data:
             names.append(i)
             counts.append(j)
-    return names[:5], counts[:5]
+    return final_data[:5]
