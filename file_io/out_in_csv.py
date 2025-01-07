@@ -1,13 +1,13 @@
 import csv
 import os
-from time import sleep
 from pathlib import Path
+from time import sleep
 from typing import Annotated, List, Union
+
 from rich import print
 
-from database.models import Category, Task
 from database.db import SessionLocal
-
+from database.models import Category, Task
 from todo.user_commands.helpers import fake_progress_bar, panic, wheahter_a_list_of_dict
 
 

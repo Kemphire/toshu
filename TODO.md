@@ -17,4 +17,6 @@
     - [ ] just output in csv format when the stdout is not a tty
 - [ ] write more unit tests
 - [X] add support for timestamps
-- [ ] add filter task support
+- [X] add filter task support
+- [ ] make update mechanism more robust
+- [ ] add a status column, which will dynamically update with time

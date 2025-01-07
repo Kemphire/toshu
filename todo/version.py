@@ -1,7 +1,6 @@
 import typer
 from rich import print
 
-
 app = typer.Typer()
 
 VERSION = 0.01

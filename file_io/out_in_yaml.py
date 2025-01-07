@@ -1,14 +1,13 @@
-from pathlib import Path
-from database.models import Category, Task
-import yaml
 import os
-from typing import List, Union, Annotated
+from pathlib import Path
 from time import sleep
+from typing import Annotated, List, Union
 
-from database.db import SessionLocal
-
+import yaml
 from rich import print
 
+from database.db import SessionLocal
+from database.models import Category, Task
 from todo.user_commands.helpers import fake_progress_bar, panic, wheahter_a_list_of_dict
 
 

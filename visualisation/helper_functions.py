@@ -33,7 +33,7 @@ def get_category_with_number_of_sizes() -> List[Tuple[str, int]]:
     with SessionLocal() as session:
         cats = session.query(Category).all()
         cat_name_and_total_tasks = [(cat.name, cat.no_of_tasks) for cat in cats]
-        orphan_task_count = session.query(Task).filter(Task.category_id == None).count()
+        orphan_task_count = session.query(Task).filter(Task.category_id is None).count()
         cat_name_and_total_tasks.append(("Orphans", orphan_task_count))
         final_data: List[Tuple[str, int]] = sorted(
             cat_name_and_total_tasks, key=lambda x: x[1], reverse=True

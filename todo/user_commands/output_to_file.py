@@ -1,14 +1,13 @@
 from pathlib import Path
 from typing import Annotated, Optional
 
-from sqlalchemy.orm import joinedload
-from database.db import SessionLocal
 import typer
+from sqlalchemy.orm import joinedload
 
+from database.db import SessionLocal
 from database.models import Category, Task
 from file_io import serve_csv, serve_json, serve_yaml
 from todo.user_commands.helpers import panic
-
 
 app = typer.Typer()
 

@@ -1,5 +1,7 @@
 import random
+
 from typer.testing import CliRunner
+
 from todo.user_commands.task import app
 
 runner = CliRunner(mix_stderr=False)

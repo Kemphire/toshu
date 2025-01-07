@@ -108,17 +108,26 @@ def print_colorful_table(object: Dict[str, List[Any]]):
         panic(f"{object} is not a dict, aborting table formation")
     table = Table(header_style="bold cyan")
     for cols in object.keys():
-        table.add_column(cols, style="dim", width=2)
+        table.add_column(cols, style="dim")
 
     max_list_len = max(len(val) for val in object.values())
     for i in range(max_list_len):
         row_content = []
         for _, values in object.items():
             if isinstance(values, list):
-                row_content.append(values[i] if i < len(values) else "")
+                row_content.append(str(values[i]) if i < len(values) else "")
             else:
                 row_content.append(str(values))
-        table.add_row(*row_content)
+        if completed_status := object.get("Completed"):
+            completed_status = completed_status[i]
+            if completed_status == ":white_check_mark:":
+                table.add_row(*row_content, style="green")
+            elif completed_status == ":x:":
+                table.add_row(*row_content, style="red")
+        else:
+            table.add_row(*row_content)
+        # table.add_row(*row_content)
+    console.print(table)
 
 
 def handle_pipes(func):

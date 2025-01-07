@@ -1,12 +1,14 @@
 from typing import Annotated, Tuple
+
+import typer
 from rich.prompt import Prompt
 from sqlalchemy.orm import Session
-import typer
+
 from database.db import SessionLocal
 from database.models import Category, Task
 from todo.user_commands.helpers import panic
-from .helpers import *
 
+from .helpers import *
 
 app = typer.Typer()
 

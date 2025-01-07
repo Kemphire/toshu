@@ -1,12 +1,13 @@
 import typer
-from sqlalchemy.exc import IntegrityError, OperationalError
-from database.db import SessionLocal
-from database.models import Category
 from rich import print
 from rich.console import Console
-from .helpers import *
+from sqlalchemy.exc import IntegrityError, OperationalError
+
+from database.db import SessionLocal
+from database.models import Category
 
 from .console_output import *
+from .helpers import *
 
 app = typer.Typer()
 
