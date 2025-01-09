@@ -131,7 +131,7 @@ def filter(
             ],
             "Priority": [task.priority for task in matching_task],
             "Completed": [
-                ":white_check_mark:" if task.completed else ":x:"
+                ":white_check_mark:" if bool(task.completed) else ":x:"
                 for task in matching_task
             ],
         }

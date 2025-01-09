@@ -132,7 +132,7 @@ def list_tasks():
                     [
                         f"[cyan]{task.priority}[/]",
                         f"{str(task.created_at.date())}",
-                        f"{str(task.created_at.time()).split(".")[0]}",
+                        f"{str(task.created_at.time()).split('.')[0]}",
                     ]
                 )
                 if bool(task.completed):
