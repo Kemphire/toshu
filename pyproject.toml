@@ -3,7 +3,7 @@ name = "todo"
 version = "0.01"
 description = "A python command line todo application"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
 	"alembic>=1.14.0",
 	"plotext>=5.3.2",
