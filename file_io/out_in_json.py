@@ -9,7 +9,11 @@ from rich.json import JSON as RJSON
 
 from database.db import SessionLocal
 from database.models import Category, Task
-from todo.user_commands.helpers import fake_progress_bar, panic, wheahter_a_list_of_dict
+from toshu.user_commands.helpers import (
+    fake_progress_bar,
+    panic,
+    wheahter_a_list_of_dict,
+)
 
 SCHEMA_OF_CATEGORY_IMPORT_FILE = RJSON(
     """

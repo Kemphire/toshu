@@ -2,7 +2,7 @@ from typing import List
 
 import plotext as plt
 
-from todo.user_commands.helpers import panic
+from toshu.user_commands.helpers import panic
 
 from .helper_functions import get_category_with_number_of_sizes
 
