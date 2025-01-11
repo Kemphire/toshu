@@ -322,7 +322,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/81/d6/676523937d86ad754
 [[package]]
 name = "toshu"
 version = "0.1"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "plotext" },
