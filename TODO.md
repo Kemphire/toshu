@@ -18,5 +18,7 @@
 - [ ] write more unit tests
 - [X] add support for timestamps
 - [X] add filter task support
-- [ ] make update mechanism more robust
+- [X] make update mechanism more robust
 - [ ] add a status column, which will dynamically update with time
+- [X] seperate category related work in category supercommand, and task related commands in task command supercommand
+- [ ] make unifrom themes using rich themes
