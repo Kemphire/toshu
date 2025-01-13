@@ -7,6 +7,7 @@ import typer
 from rich import print
 from rich.console import Console
 from rich.live import Live
+from rich.panel import Panel
 from rich.progress import track
 from rich.prompt import Prompt
 from rich.spinner import Spinner
@@ -71,12 +72,21 @@ def interactive_add_task_int(categ: str, console: Console):
 
 
 def panic(message: str, severe: int = 3):
-    console = Console(stderr=True)
-    console.print(message)
-    if severe == 3:
-        sys.exit(1)
-    else:
-        raise typer.Exit
+    console = Console()
+    match severe:
+        case 3:
+            panel = Panel(
+                message, title="Error", title_align="left", border_style="red"
+            )
+        case 2:
+            panel = Panel(
+                message, title="Error", title_align="left", border_style="yello"
+            )
+        case _:
+            panel = Panel(
+                message, title="Error", title_align="left", border_style="cyan"
+            )
+    console.print(panel)
 
 
 def count_not_completed(query: List[Task]) -> int:

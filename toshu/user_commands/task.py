@@ -17,7 +17,7 @@ console = Console()
 
 
 @app.command(short_help="to add task")
-def add_task(
+def add(
     categ: Annotated[
         str,
         typer.Option(
@@ -50,7 +50,7 @@ def add_task(
                 )
                 session.add(new_task)
                 console.print(
-                    f"Task with title [red]{title}[/] in category [yello]{categ}[/] create [green]succesfully[/] :beer_mug:",
+                    f"Task with title [red]{title}[/] in category [yello]{categ}[/] created [green]succesfully[/] :beer_mug:",
                     style="conceal",
                 )
                 session.commit()
@@ -172,11 +172,11 @@ def get_id(title: str):
 
 
 @app.command()
-def _update_task(title_or_id: str):
+def update_task(title_or_id: str):
     """Update the task based on given id/title of task"""
     with SessionLocal() as session:
         task_query = session.query(Task).filter(
-            Task.title == title_or_id
+            Task.id == int(title_or_id)
             if title_or_id.isdigit()
             else Task.title == title_or_id
         )
@@ -202,7 +202,7 @@ def _update_task(title_or_id: str):
             prompt_text: str,
             choices: List[str] | Any = None,
             default=None,
-        ):
+        ) -> str | None:
             if Confirm.ask(f"Do you want to update the {field_name}?", default=False):
                 return Prompt.ask(prompt_text, choices=choices, default=default)
             return None
@@ -227,7 +227,7 @@ def _update_task(title_or_id: str):
                 "completed",
                 f"Do you want to change the completion status from [red]{task.completed}[/] to [blue]{not task.completed}[/]?",
                 default=False,
-                choices=[False, True],
+                choices=[str(False), str(True)],
             )
         ):
             update_dict["completed"] = new_completion
@@ -240,10 +240,10 @@ def _update_task(title_or_id: str):
         ):
             update_dict["priority"] = new_priority
 
-        if update_dict is None:
-            panic(f"Nothing changed so far in [blue]{task}[/]")
+        if not update_dict:
+            panic(f"Nothing changed so far for [blue]{task}[/]")
         else:
             for key, value in update_dict.items():
                 setattr(task, key, value)
-                print(f"Old {key} ---> {value}")
+                print(f"New {key} ---> {value}")
             session.commit()

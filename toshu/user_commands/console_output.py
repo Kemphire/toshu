@@ -18,32 +18,6 @@ app = typer.Typer()
 console = Console()
 
 
-@app.command(short_help="list all categories")
-def list_category():
-    spinner = Spinner("bouncingBall", text="Fetching categories...")
-
-    with Live(spinner, refresh_per_second=10, console=console) as live:
-        with SessionLocal() as session:
-            cats: List[Category] = session.query(Category).all()
-        for _ in range(10):
-            sleep(0.1)
-            live.refresh()
-    if not cats:
-        print(
-            "[red]No Category[/]\nAdd it by running [bold green]add-category[/] [blue]cat_name[/]"
-        )
-    else:
-        table = Table(header_style="bold cyan")
-        table.add_column("#", style="dim", width=1)
-        table.add_column("Name", justify="center")
-        table.add_column("Total Task")
-        for cat in cats:
-            table.add_row(
-                str(cat.id), f"[green]{cat.name}[/]", f"[blue]{cat.no_of_tasks}[/]"
-            )
-        console.print(table)
-
-
 def list_category_int(to_highlight: str, console: Console):
     with SessionLocal() as session:
         cats: List[Category] = session.query(Category).all()
@@ -72,9 +46,12 @@ def list_category_int(to_highlight: str, console: Console):
         console.print(table)
 
 
-@app.command(short_help="Display list of task, with related data")
+@app.command(short_help="Display list of task, with related data", name="list")
 @handle_pipes
-def list_tasks():
+def show_list():
+    """
+    Show the list of avaialbe tasks
+    """
     spinner = Spinner("bouncingBall", text="Fetching tasks...")
     with Live(spinner, refresh_per_second=10, console=console) as live:
         for _ in range(5):
@@ -92,12 +69,14 @@ def list_tasks():
                     show_header=True,
                     header_style="bold magenta",
                     caption=f"You have [bold red]{not_completed}[/] tasks not completed",
+                    padding=(0, 3),
                 )
             else:
                 table = Table(
                     show_header=True,
                     header_style="bold magenta",
                     caption="You have completed all your task",
+                    padding=(0, 3),
                 )
 
             table.add_column(

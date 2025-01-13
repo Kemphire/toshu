@@ -72,9 +72,7 @@ class Task(Base):
     category = relationship("Category", back_populates="tasks")
 
     def __repr__(self) -> str:
-        return (
-            f"<Task(id = {self.id}), title='{self.title}', completed={self.completed}"
-        )
+        return f"<Task(id = {self.id}), title='{self.title}', completed={self.completed}, priority={self.priority}>"
 
 
 @event.listens_for(Task, "after_insert")
