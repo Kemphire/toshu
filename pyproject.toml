@@ -1,6 +1,6 @@
 [project]
 name = "toshu"
-version = "0.01"
+version = "0.02"
 description = "A python command line todo application"
 readme = "README.md"
 requires-python = ">=3.11"
