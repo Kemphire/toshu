@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from database.db import SessionLocal
 from database.models import Category, Task
 
-console = Console()
+from ..themes.console_theme import CONSOLE as console
 
 
 def find_category(session: Session, categ: str) -> Category:
@@ -72,7 +72,6 @@ def interactive_add_task_int(categ: str, console: Console):
 
 
 def panic(message: str, severe: int = 3):
-    console = Console()
     match severe:
         case 3:
             panel = Panel(
