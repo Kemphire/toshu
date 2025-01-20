@@ -9,10 +9,11 @@ DB_PARENT_PATH = Path("~/.toshu").expanduser()
 DB_PARENT_PATH.mkdir(exist_ok=True)
 
 DB_PATH = DB_PARENT_PATH.resolve() / "todo.db"
+DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 from .models import Base
 
-engine = create_engine(f"sqlite:///{DB_PATH}")
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine)
 

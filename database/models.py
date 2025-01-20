@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from typing import Union
 
@@ -68,6 +68,9 @@ class Task(Base):
     priority = Column(SEnum(Priority), default=Priority.L, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(default=datetime.now())
+
+    # we cannot set default value on existing rows, so first of all set then null than edit the migration file to set default value
+    due: Mapped[datetime] = mapped_column(default=datetime.now() + timedelta(days=1))
 
     category = relationship("Category", back_populates="tasks")
 

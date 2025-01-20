@@ -1,6 +1,8 @@
+from datetime import datetime
 from time import sleep
 from typing import List
 
+import human_readable
 import typer
 from rich import print
 from rich.console import Console
@@ -90,8 +92,8 @@ def show_list():
             table.add_column("Description", justify="right")
             table.add_column("Category")
             table.add_column("Priority")
-            table.add_column("Created At (date)", justify="center")
-            table.add_column("Created At (time)", justify="center")
+            table.add_column("Created At", justify="center")
+            table.add_column("Due at", justify="center")
             table.add_column("Completed")
             for task in tasks:
                 row_content = [
@@ -110,8 +112,8 @@ def show_list():
                 row_content.extend(
                     [
                         f"[cyan]{task.priority}[/]",
-                        f"{str(task.created_at.date())}",
-                        f"{str(task.created_at.time()).split('.')[0]}",
+                        f"{str(human_readable.date_time(datetime.now() - task.created_at))}",
+                        f"{str(human_readable.date_time(datetime.now() - task.due))}",
                     ]
                 )
                 if bool(task.completed):

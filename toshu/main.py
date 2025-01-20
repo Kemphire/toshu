@@ -16,5 +16,9 @@ app.add_typer(plot_app)
 app.add_typer(user_app, name="task", help="task realated commands")
 app.add_typer(category_related, name="category", help="category related commands")
 
+
+# for info dashboard
+
+
 if __name__ == "__main__":
     app()
