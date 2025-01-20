@@ -1,6 +1,6 @@
 [project]
 name = "toshu"
-version = "0.02"
+version = "0.03"
 description = "A python command line todo application"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,6 +13,7 @@ dependencies = [
 	"pyyaml>=6.0.2",
 	"sqlalchemy>=2.0.36",
 	"termcharts>=1.1.2",
+	"toml>=0.10.2",
 	"typer>=0.15.1",
 ]
 authors = [{ name = "Kartikey Shahi", email = "kartikeyshahi@hotmail.com" }]
