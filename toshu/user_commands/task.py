@@ -35,19 +35,31 @@ def add(
         ),
     ] = Priority.L,
     interactive: bool = False,
+    due: Annotated[str | None, typer.Option(help="add a deadline")] = None,
 ):
     if not interactive:
         if not title:
             title = typer.prompt("Enter title")
         with SessionLocal() as session:
+            if due:
+                due_datetime = return_datetime(due)
+                if due_datetime is None:
+                    panic(f"Your passed due date [red]{due}[/] cannot be intrpreted")
+                elif due_datetime < datetime.now():
+                    panic(
+                        f"Your passed time, i.e. [red]{due}[/] whose interpretation is [blue]{due_datetime}[/] is in past, only future dates are allowed"
+                    )
             try:
                 category = find_category(session, categ)
-                new_task = Task(
-                    title=title,
-                    description=description,
-                    category_id=category.id,
-                    priority=priority,
-                )
+                task_attribute = {
+                    "title": title,
+                    "description": description,
+                    "category_id": category.id,
+                    "priority": priority,
+                }
+                if due:
+                    task_attribute["due"] = due_datetime
+                new_task = Task(**task_attribute)
                 session.add(new_task)
                 console.print(
                     f"Task with title [red]{title}[/] in category [yello]{categ}[/] created [green]succesfully[/] :beer_mug:",

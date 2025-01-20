@@ -22,4 +22,4 @@
 - [X] seperate category related work in category supercommand, and task related commands in task command supercommand
 - [ ] make unifrom themes using rich themes
 - [X] a human readable created at time
-- [ ] adding feature to add due timeline
+- [X] adding feature to add due timeline

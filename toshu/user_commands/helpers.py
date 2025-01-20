@@ -1,8 +1,10 @@
 import sys
+from datetime import datetime
 from functools import wraps
 from time import sleep
 from typing import Any, Dict, List
 
+import dateparser
 import typer
 from rich import print
 from rich.console import Console
@@ -77,15 +79,18 @@ def panic(message: str, severe: int = 3):
             panel = Panel(
                 message, title="Error", title_align="left", border_style="red"
             )
+            console.print(panel)
+            sys.exit(1)
         case 2:
             panel = Panel(
                 message, title="Error", title_align="left", border_style="yello"
             )
+            console.print(panel)
         case _:
             panel = Panel(
                 message, title="Error", title_align="left", border_style="cyan"
             )
-    console.print(panel)
+            console.print(panel)
 
 
 def count_not_completed(query: List[Task]) -> int:
@@ -152,3 +157,7 @@ def handle_pipes(func):
             panic("Pipes [bold red]'|'[/] are not yet supported!")
 
     return wrapper
+
+
+def return_datetime(datetimestr: str) -> datetime | None:
+    return dateparser.parse(datetimestr)
