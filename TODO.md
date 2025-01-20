@@ -23,3 +23,4 @@
 - [ ] make unifrom themes using rich themes
 - [X] a human readable created at time
 - [X] adding feature to add due timeline
+- [X] some bug fixes for deadline feature

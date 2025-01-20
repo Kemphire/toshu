@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
 from typing import List
 
@@ -113,7 +113,7 @@ def show_list():
                     [
                         f"[cyan]{task.priority}[/]",
                         f"{str(human_readable.date_time(datetime.now() - task.created_at))}",
-                        f"{str(human_readable.date_time(datetime.now() - task.due))}",
+                        f"{str(human_readable.date_time(datetime.now() - task.due)) if (datetime.now() - task.due) < timedelta() else '[bold yellow underline]Overdue[/]'}",
                     ]
                 )
                 if bool(task.completed):
