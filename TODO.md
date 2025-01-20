@@ -24,3 +24,5 @@
 - [X] a human readable created at time
 - [X] adding feature to add due timeline
 - [X] some bug fixes for deadline feature
+- [ ] add a command to purge completed tasks
+- [ ] build a web interface to the cli, using fastapi
