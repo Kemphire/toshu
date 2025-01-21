@@ -83,12 +83,12 @@ def panic(message: str, severe: int = 3):
             sys.exit(1)
         case 2:
             panel = Panel(
-                message, title="Error", title_align="left", border_style="yello"
+                message, title="Info", title_align="left", border_style="yellow"
             )
             console.print(panel)
         case _:
             panel = Panel(
-                message, title="Error", title_align="left", border_style="cyan"
+                message, title="Info", title_align="left", border_style="cyan"
             )
             console.print(panel)
 

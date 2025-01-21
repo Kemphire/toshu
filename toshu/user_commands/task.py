@@ -73,7 +73,7 @@ def add(
 
 
 @app.command(short_help="Mark task as completed")
-def mark_updated(
+def complete(
     tit_o_id: Annotated[
         str,
         typer.Argument(
@@ -92,8 +92,8 @@ def mark_updated(
             completed = task.completed
         else:
             task = session.query(Task).filter(Task.title == tit_o_id)
-            if not task:
-                panic("There is not task with title {tit_o_id}")
+            if task.count() == 0:
+                panic(f"There is not task with title [blue]{tit_o_id}[/]")
             choices = [str(ta.id) for ta in task]
             if task.count() > 1:
                 id_to_update = Prompt.ask(
