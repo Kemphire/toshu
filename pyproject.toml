@@ -39,6 +39,9 @@ toshu = "toshu.main:app" # entry point for my CLI app
 where = ["."]
 exclude = ["migrations", "tests", "migrations.*", "tests.*"]
 
+[tool.setuptools.package-data]
+web = ["static/**", "templates/**"]
+
 [tool.ruff]
 select = ["E", "F", "I"]
 
