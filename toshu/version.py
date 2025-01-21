@@ -3,7 +3,7 @@ from rich import print
 
 app = typer.Typer()
 
-VERSION = "0.03.1"
+VERSION = "0.03.2"
 
 
 @app.command(short_help="Show version, and exit")
