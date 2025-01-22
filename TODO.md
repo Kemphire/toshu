@@ -25,4 +25,9 @@
 - [X] adding feature to add due timeline
 - [X] some bug fixes for deadline feature
 - [X] add a command to purge completed tasks
-- [ ] build a web interface to the cli, using fastapi
+- build a web interface to the cli, using fastapi
+    - [X] list tasks page
+    - [ ] add tasks page, and endpoint
+    - [ ] delete tasks page and endpoint
+    - [ ] list categories with related info
+    - [ ] purge task button and endpoint
