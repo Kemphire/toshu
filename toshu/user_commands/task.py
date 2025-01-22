@@ -236,7 +236,7 @@ def update_task(title_or_id: str):
 
         if new_completion := bool(
             update_field(
-                "completed",
+                "completion status",
                 f"Do you want to change the completion status from [red]{task.completed}[/] to [blue]{not task.completed}[/]?",
                 default=False,
                 choices=[str(False), str(True)],
