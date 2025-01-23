@@ -27,7 +27,10 @@
 - [X] add a command to purge completed tasks
 - build a web interface to the cli, using fastapi
     - [X] list tasks page
+    - [ ] see marimo github repository, how they implemented server gracefull shutdown
     - [ ] add tasks page, and endpoint
     - [ ] delete tasks page and endpoint
     - [ ] list categories with related info
     - [ ] purge task button and endpoint
+
+- [ ] refactor function, and add functions with minimum side effects in order to use then both in web and cli

@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Annotated, Optional
 
+import human_readable
 import typer
 from rich import print
 from sqlalchemy.orm import joinedload
@@ -125,9 +126,15 @@ def filter(
             "Title": [task.title for task in matching_task],
             "Description": [task.description for task in matching_task],
             "Category": [task.category for task in matching_task],
-            "Created at (date)": [task.created_at.date() for task in matching_task],
-            "Creaated at (time)": [
-                str(task.created_at.time()).split(".")[0] for task in matching_task
+            "Created": [
+                human_readable.date_time(datetime.now() - task.created_at)
+                for task in matching_task
+            ],
+            "Due": [
+                human_readable.date_time(datetime.now() - task.due)
+                if (datetime.now() - task.due) < timedelta()
+                else "[bold yellow underline]Overdue[/]"
+                for task in matching_task
             ],
             "Priority": [task.priority for task in matching_task],
             "Completed": [

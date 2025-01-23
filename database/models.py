@@ -72,6 +72,12 @@ class Task(Base):
     # we cannot set default value on existing rows, so first of all set then null than edit the migration file to set default value
     due: Mapped[datetime] = mapped_column(default=datetime.now() + timedelta(days=1))
 
+    @property
+    def status(self):
+        if self.due <= datetime.now():
+            return "Overdue"
+        return "In Progress"
+
     category = relationship("Category", back_populates="tasks")
 
     def __repr__(self) -> str:

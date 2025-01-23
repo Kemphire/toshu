@@ -1,3 +1,5 @@
+import multiprocessing
+
 import typer
 
 from web.server_uvi import start_server
@@ -21,7 +23,10 @@ app.add_typer(category_related, name="category", help="category related commands
 
 @app.command(short_help="a web interface for managing your tasks")
 def server(host: str = "127.0.0.1", port: int = 2380):
-    start_server(host, port)
+    server_process = multiprocessing.Process(target=start_server, args=(host, port))
+    server_process.start()
+
+    typer.launch(f"http://{host}:{port}")
 
 
 if __name__ == "__main__":

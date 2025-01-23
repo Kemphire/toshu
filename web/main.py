@@ -24,12 +24,26 @@ async def home_page(request: Request, app_name: str = "Toshu"):
     )
 
 
-@app.get("/tasks")
+@app.get("/tasks", name="task_list")
 async def list_page(request: Request):
     with SessionLocal() as session:
         result = session.execute(select(Task))
         tasks = result.scalars().all()
 
-        return templates.TemplateResponse(
-            "task_list.html", {"request": request, "tasks": tasks}
-        )
+    return templates.TemplateResponse(
+        "task_list.html", {"request": request, "tasks": tasks}
+    )
+
+
+@app.get("/detail/{task_id}", name="task_detail")
+async def task_detail(request: Request, task_id: int):
+    with SessionLocal() as session:
+        task = session.get(Task, task_id)
+        if task is None:
+            return templates.TemplateResponse(
+                "task_not_found.html",
+                {"request": request, "task_id": task_id},
+            )
+    return templates.TemplateResponse(
+        "task_detail.html", {"request": request, "task": task}
+    )

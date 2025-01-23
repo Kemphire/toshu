@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="task-detail-container">
+  <h1 class="text-center mb-4">{{ task.title }}</h1>
+  <div class="task-detail-card">
+    <h3>Description</h3>
+    <p>{{ task.description }}</p>
+    <h3>Due Date</h3>
+    <p>{{ task.due }}</p>
+    <h3>Status</h3>
+    <p>{{ task.status }}</p>
+    <div class="text-center mt-4">
+      {#
+      <!-- <a href="{% url 'task-list' %}" class="btn btn-custom">Back to Tasks</a> -->
+      <!-- <a href="{% url 'task-update' task.id %}" class="btn btn-custom">Edit Task</a> -->
+      <!-- <a href="{% url 'task-delete' task.id %}" class="btn btn-danger">Delete Task</a> -->
+      #}
+      <a href="{{ url_for("task_list")}}" class="btn btn-custom">Back to Tasks</a>
+      <a href="#" class="btn btn-custom">Edit Task</a>
+      <a href="#" class="btn btn-danger">Delete Task</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

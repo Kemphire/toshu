@@ -114,65 +114,6 @@ def complete(
         )
 
 
-# @app.command()
-# def update_task(id: int):
-#     """Update the task based on given id of task"""
-#     with SessionLocal() as session:
-#         task = session.get(Task, id)
-#         if not task:
-#             print(f"[bold red]Session with [blue]{id}[/blue] not present[/bold red]")
-#             raise typer.Exit()
-#         old_title, old_completed_status, old_category = (
-#             task.title,
-#             task.completed,
-#             task.category,
-#         )
-#
-#         # ask about the fields which user wants to modify
-#         update_title = typer.confirm("Do you want to update the title?", default=False)
-#         update_description = typer.confirm(
-#             "Do you want to update the description?", default=False
-#         )
-#         if task.completed:
-#             update_completed = typer.confirm(
-#                 "Do you want to mark the status as not-completed", default=False
-#             )
-#             if update_completed:
-#                 task.completed = False
-#         else:
-#             update_completed = typer.confirm(
-#                 "Do you want to mark the status as completed", default=False
-#             )
-#             if update_completed:
-#                 mark_updated(str(id))
-#         category_change = typer.confirm("Do you want to change your category?")
-#         if category_change:
-#             categories = session.query(Category).filter(Category.id != task.category_id)
-#             # only the value of choices array will be considered, valid input for new_categ prompt
-#             choices = [str(cat.name) for cat in categories]
-#             new_categ = Prompt.ask(
-#                 "Choose from the avialable categories", choices=choices
-#             )
-#             task.category = categories[choices.index(new_categ)]
-#             task.category_id = categories[choices.index(new_categ)].id
-#
-#         if update_title:
-#             new_title = typer.prompt("Enter the new title", default=task.title)
-#             task.title = new_title
-#         if update_description:
-#             new_description = typer.prompt(
-#                 "Enter the new description", default=task.description
-#             )
-#             task.description = new_description
-#
-#         if not (update_title | update_completed | update_description | category_change):
-#             print("[bold green]No changes have been made[/bold green]")
-#         else:
-#             print(f"Task with title [bold red]{old_title}[/bold red] has been changed!")
-#
-#         session.commit()
-
-
 @app.command(short_help="get id by title")
 def get_id(title: str):
     with SessionLocal() as session:
@@ -183,7 +124,7 @@ def get_id(title: str):
         session.commit()
 
 
-@app.command()
+@app.command(name="update")
 def update_task(title_or_id: str):
     """Update the task based on given id/title of task"""
     with SessionLocal() as session:
