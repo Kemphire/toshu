@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Update Form{% endblock %}
+
+{% block content %}
+
+<form action="{{url_for('update_validation', task_id=task.id)}}" method="post">
+        <!-- Title Field -->
+        <label for="title">Title:</label><br>
+				<input type="text" id="title" name="title" value="{{task.title}}"><br><br>
+
+        <!-- Category Dropdown -->
+        <label for="category">Category:</label><br>
+        <select id="category" name="category" required>
+					{%for category in categories %}
+							<option value="{{category.name}}">{{category.name}}</option>
+					{%endfor%}
+        </select><br><br>
+
+        <!-- Priority Dropdown -->
+        <label for="priority">Priority:</label><br>
+        <select id="priority" name="priority" required>
+					{%for priority in priorities %}
+						<option value="{{priority.value}}"> {{priority.value}}</option>
+					{%endfor%}
+        </select><br><br>
+
+        <!-- Description Field -->
+        <label for="description">Description:</label><br>
+	<textarea id="description" name="description" rows="4" cols="50" value="{{task.description}}" required></textarea><br><br>
+
+        <!-- Completion Status Checkbox -->
+        <label for="completionStatus">Completion Status:</label>
+					{%if task.completed%}
+								<input type="checkbox" id="completionStatus" name="completionStatus" checked><br><br>
+					{%else%}
+								<input type="checkbox" id="completionStatus" name="completionStatus"><br><br>
+					{%endif%}
+        <!-- Submit Button -->
+        <input type="submit" value="Submit Task">
+    </form>
+
+{% endblock %}

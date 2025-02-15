@@ -8,6 +8,7 @@ from typing_extensions import Annotated
 
 from database.db import SessionLocal
 from database.models import Priority, Task
+from utils.task import update_task_independantly
 
 from .helpers import *
 
@@ -196,7 +197,10 @@ def update_task(title_or_id: str):
         if not update_dict:
             panic(f"Nothing changed so far for [blue]{task}[/]")
         else:
-            for key, value in update_dict.items():
-                setattr(task, key, value)
-                print(f"New {key} ---> {value}")
-            session.commit()
+            # for key, value in update_dict.items():
+            #     setattr(task, key, value)
+            #     print(f"New {key} ---> {value}")
+            # session.commit()
+            updated = update_task_independantly(session, task, update_dict)
+            for key, values in updated.items():
+                print(f"New {key} ---> {values}")

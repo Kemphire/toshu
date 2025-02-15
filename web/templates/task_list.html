@@ -8,8 +8,10 @@
 							<h3>{{ task.title }}</h3>
 						</a>
             <p>{{ task.description }}</p>
-            <button class="btn btn-custom">Mark as Done</button>
-            <button class="btn btn-danger delete-task">Delete</button>
+						{%if not task.completed%}
+									<a href="{{url_for("complete_task",task_id=task.id)}}"><button class="btn btn-custom">Mark as Done</button></a>
+						{%endif%}
+						<a href="{{url_for("delete_task",task_id=task.id)}}"><button class="btn btn-danger delete-task">Delete</button></a>
         </div>
     {% endfor %}
     <div class="text-center mt-4">

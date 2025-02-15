@@ -11,7 +11,8 @@ from rich.spinner import Spinner
 from rich.table import Table
 
 from database.db import SessionLocal
-from database.models import Category, Task
+from database.models import Category
+from utils.task import all_task
 
 from .helpers import *
 
@@ -55,13 +56,12 @@ def show_list():
     Show the list of avaialbe tasks
     """
     spinner = Spinner("bouncingBall", text="Fetching tasks...")
-    with Live(spinner, refresh_per_second=10, console=console) as live:
-        for _ in range(5):
-            sleep(0.05)  # Small sleep intervals
+    with Live(spinner, refresh_per_second=1, console=console) as live:
+        for _ in range(2):
+            sleep(0.5)  # Small sleep intervals
             live.refresh()  # Force spinner update
     with SessionLocal() as session:
-        tasks = session.query(Task).all()
-        session.commit()
+        tasks = all_task(session)
         if not tasks:
             print("[red]No task[/]")
         else:

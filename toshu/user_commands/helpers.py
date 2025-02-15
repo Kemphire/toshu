@@ -43,6 +43,12 @@ def get_category_names_from_database():
     return category_names
 
 
+def get_category_from_database():
+    with SessionLocal() as session:
+        categories = [category for category in session.query(Category).all()]
+    return categories
+
+
 def interactive_add_task_int(categ: str, console: Console):
     title = Prompt.ask("Enter the title")
     description = Prompt.ask("Enter the description")

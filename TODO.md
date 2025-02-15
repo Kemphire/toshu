@@ -27,10 +27,16 @@
 - [X] add a command to purge completed tasks
 - build a web interface to the cli, using fastapi
     - [X] list tasks page
-    - [ ] see marimo github repository, how they implemented server gracefull shutdown
+    - [X] see marimo github repository, how they implemented server gracefull shutdown
     - [ ] add tasks page, and endpoint
-    - [ ] delete tasks page and endpoint
+    - [X] delete tasks page and endpoint
     - [ ] list categories with related info
     - [ ] purge task button and endpoint
+    - [X] update task endpoint
 
 - [ ] refactor function, and add functions with minimum side effects in order to use then both in web and cli
+- [ ] fixed the web and cli based update logic, specially add changing category on update in cli
+- [ ] implement levenshtein algorithm in my cli, to give the most matching command when a user types a wrong command
+    - [X] if possible then implement a seperate package for this, whose only work is to give the most matching word from the given words to the input word and some more feature
+
+- [ ] build this project completely than move to either click or [cyclopts](https://github.com/BrianPugh/cyclopts)
